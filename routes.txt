@@ -1,0 +1,21 @@
+
+// To get marks
+api/enrollments/id/marks 
+api/semesters/id/marks
+api/subject/id/marks
+
+
+
+// 
+Hery - 
+bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0IiwidW5pcXVlX25hbWUiOiJoZW5yeSIsInJvbGUiOiJTdHVkZW50IiwibmJmIjoxNjkyMDE5OTY2LCJleHAiOjE2OTIxMDYzNjYsImlhdCI6MTY5MjAxOTk2Nn0.hVlHVvDYYDNk9gUCZHS09_H6qoyRJ6dSONiZJuD5tQkOSi5LY2Yf9pPPHswpxq9hRW70HWrBWnRTPhsPksXTtw
+
+Khan
+bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI1IiwidW5pcXVlX25hbWUiOiJtcmtoYW4iLCJyb2xlIjoiVGVhY2hlciIsIm5iZiI6MTY5MjAxODkwMywiZXhwIjoxNjkyMTA1MzAzLCJpYXQiOjE2OTIwMTg5MDN9.rtAtOVt91rzuAsReQeeyliwi4pIeZyX5gJiKlG-Bw6i2_n0aWhiySksUXBqg2PBh3OiAqFJvmY-f3Ek34ASxEQ
+
+
+// Add marks
+1. if marks already added, and if tried to add marks again, gives error(Bad Request(400) - An error occurred while saving the entity changes. See the inner exception for details.)
+
+//Update subject
+for update subject, we have made name, code, semesterId as required.
