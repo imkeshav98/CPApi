@@ -18,7 +18,9 @@ namespace CPApi.Repositories
 
         public async Task<List<Semester>> GetAllSemesters()
         {
-            var dbSemesters = await _context.Semesters.ToListAsync();
+            var dbSemesters = await _context.Semesters
+            .Where(s => s.Status == true)
+            .ToListAsync();
             return dbSemesters;
         }
 
@@ -26,6 +28,10 @@ namespace CPApi.Repositories
         {
             var dbSemester = await _context.Semesters.FirstOrDefaultAsync(s => s.Id == id);
             if(dbSemester is null)
+            {
+                throw new NotFoundException("Semester not found");
+            }
+            if(dbSemester.Status == false)
             {
                 throw new NotFoundException("Semester not found");
             }
@@ -40,7 +46,7 @@ namespace CPApi.Repositories
 
         public async Task<Semester> UpdateSemester(Semester semester)
         {
-            var dbSemester = await _context.Semesters.FirstOrDefaultAsync(s => s.Id == semester.Id);
+            var dbSemester = await _context.Semesters.FirstOrDefaultAsync(s => s.Id == semester.Id && s.Status == true);
             if(dbSemester is null)
             {
                 throw new NotFoundException("Semester not found");
@@ -56,7 +62,7 @@ namespace CPApi.Repositories
 
         public async Task<bool> CloseSemester(int id)
         {
-            var dbSemester = await _context.Semesters.FirstOrDefaultAsync(s => s.Id == id);
+            var dbSemester = await _context.Semesters.FirstOrDefaultAsync(s => s.Id == id && s.Status == true);
             if(dbSemester is null)
             {
                 throw new NotFoundException("Semester not found");

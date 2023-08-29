@@ -8,11 +8,13 @@ namespace CPApi.Services
     public class SubjectService : ISubjectService
     {
         private readonly ISubjectRepository _subjectRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IMapper _mapper;
 
-        public SubjectService(ISubjectRepository subjectRepository, IMapper mapper)
+        public SubjectService(ISubjectRepository subjectRepository, IEnrollmentRepository enrollmentRepository, IMapper mapper)
         {
             _subjectRepository = subjectRepository;
+            _enrollmentRepository = enrollmentRepository;
             _mapper = mapper;
         }
 
@@ -84,6 +86,16 @@ namespace CPApi.Services
 
         public async Task<ServiceResponse<bool>> CloseSubject(int id)
         {
+            var enrollmentList = await _enrollmentRepository.GetEnrollmentsBySubjectId(id);
+            if (enrollmentList is null)
+            {
+                throw new NotFoundException("Enrollments not found");
+            }
+            var isAllEnrollmentsClosed = enrollmentList.All(e => e.Status == false);
+            if (!isAllEnrollmentsClosed)
+            {
+                throw new Exception("Can't close subject because there are still enrollments that are not closed");
+            }
             var serviceResponse = new ServiceResponse<bool>();
             try
             {

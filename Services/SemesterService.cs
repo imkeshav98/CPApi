@@ -8,11 +8,13 @@ namespace CPApi.Services
     public class SemesterService : ISemesterService
     {
         private readonly ISemesterRepository _semesterRepository;
+        private readonly ISubjectRepository _subjectRepository;
         private readonly IMapper _mapper;
 
-        public SemesterService(ISemesterRepository semesterRepository, IMapper mapper)
+        public SemesterService(ISemesterRepository semesterRepository, ISubjectRepository subjectRepository, IMapper mapper)
         {
             _semesterRepository = semesterRepository;
+            _subjectRepository = subjectRepository;
             _mapper = mapper;
         }
 
@@ -85,6 +87,12 @@ namespace CPApi.Services
 
         public async Task<ServiceResponse<bool>> CloseSemester(int id)
         {
+            var subjectList = await _subjectRepository.GetSubjectsBySemId(id);
+            var isAllSubjectClosed = subjectList.All(s => s.Status == false);
+            if (!isAllSubjectClosed)
+            {
+                throw new Exception("Can't close semester because there are still subjects that are not closed");
+            }
             var serviceResponse = new ServiceResponse<bool>();
             try
             {

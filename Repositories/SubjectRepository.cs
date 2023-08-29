@@ -26,7 +26,7 @@ namespace CPApi.Repositories
                 .Include(s => s.User)
                 .Include(s => s.User!.Role)
                 .Include(s => s.Semester)
-                .Where(s => s.UserId == userId)
+                .Where(s => s.UserId == userId && s.Status == true)
                 .ToListAsync();
             }
             else{
@@ -34,6 +34,7 @@ namespace CPApi.Repositories
                 .Include(s => s.User)
                 .Include(s => s.User!.Role)
                 .Include(s => s.Semester)
+                .Where(s => s.Status == true)
                 .ToListAsync();
             }
             return dbSubjects;
@@ -49,14 +50,14 @@ namespace CPApi.Repositories
                 .Include(s => s.User)
                 .Include(s => s.User!.Role)
                 .Include(s => s.Semester)
-                .FirstOrDefaultAsync(s => s.Id == id && s.UserId == userId);
+                .FirstOrDefaultAsync(s => s.Id == id && s.UserId == userId && s.Status == true);
             }
             else{
                 dbSubject = await _context.Subjects
                 .Include(s => s.User)
                 .Include(s => s.User!.Role)
                 .Include(s => s.Semester)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id && s.Status == true);
             }
             if(dbSubject is null)
             {
@@ -76,7 +77,7 @@ namespace CPApi.Repositories
                 .Include(s => s.User)
                 .Include(s => s.User!.Role)
                 .Include(s => s.Semester)
-                .FirstOrDefaultAsync(s => s.Id == subject.Id);
+                .FirstOrDefaultAsync(s => s.Id == subject.Id && s.Status == true);
             if(dbSubject is null)
             {
                 throw new Exception("Error while adding subject");
@@ -92,7 +93,7 @@ namespace CPApi.Repositories
                 .Include(s => s.User)
                 .Include(s => s.User!.Role)
                 .Include(s => s.Semester)
-                .Where(s => s.UserId == userId)           
+                .Where(s => s.UserId == userId && s.Status == true)           
                 .FirstOrDefaultAsync(s => s.Id == subject.Id);
             if(dbSubject is null)
             {
@@ -107,7 +108,7 @@ namespace CPApi.Repositories
         // No need to check for user role here because only teacher can delete subject
         public async Task<bool> CloseSubject(int id)
         {
-            var dbSubject = await _context.Subjects.FirstOrDefaultAsync(s => s.Id == id);
+            var dbSubject = await _context.Subjects.FirstOrDefaultAsync(s => s.Id == id && s.Status == true);
             if(dbSubject is null)
             {
                 throw new NotFoundException("Subject not found");
@@ -115,6 +116,22 @@ namespace CPApi.Repositories
             dbSubject.Status = false;
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<Subject>> GetSubjectsBySemId(int id)
+        {
+            var subjects = await _context.Subjects
+            .Include(s => s.User)
+            .Include(s => s.User!.Role)
+            .Include(s => s.Semester)
+            .Where(s => s.Semester!.Id == id)
+            .ToListAsync();
+
+            if(subjects is null)
+            {
+                throw new NotFoundException("Subjects not found");
+            }
+            return subjects;
         }
 
     }

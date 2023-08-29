@@ -8,11 +8,13 @@ namespace CPApi.Services
     public class MarkService : IMarkService
     {
         private readonly IMarkRepository _markRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IMapper _mapper;
 
-        public MarkService(IMarkRepository markRepository, IMapper mapper)
+        public MarkService(IMarkRepository markRepository, IEnrollmentRepository enrollmentRepository, IMapper mapper)
         {
             _markRepository = markRepository;
+            _enrollmentRepository = enrollmentRepository;
             _mapper = mapper;
         }
 
@@ -54,6 +56,7 @@ namespace CPApi.Services
             try
             {
                 var dbMark = await _markRepository.AddMark(_mapper.Map<Mark>(mark));
+                var closeEnrollment = await _enrollmentRepository.CloseEnrollment(mark.EnrollmentId);
                 serviceResponse.Data = _mapper.Map<MarkResponseDto>(dbMark);
             }
             catch (Exception ex)
