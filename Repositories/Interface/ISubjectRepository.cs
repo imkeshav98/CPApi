@@ -12,5 +12,6 @@ namespace CPApi.Repositories.Interface
         Task<Subject> AddSubject(Subject subject);
         Task<Subject> UpdateSubject(Subject subject);
         Task<bool> CloseSubject(int id);
+        Task<List<Subject>> GetSubjectsBySemesterId(int id);
     }
 }

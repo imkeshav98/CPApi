@@ -156,7 +156,7 @@ namespace CPApi.Repositories
                 .Include(e => e.Subject!.User!.Role)
                 .Include(e => e.Subject!.Semester)
                 .Include(e => e.Mark)
-                .Where(e => e.SubjectId == id && e.Subject!.UserId == userId)
+                .Where(e => e.SubjectId == id)
                 .ToListAsync();
             return dbEnrollments;
         }
